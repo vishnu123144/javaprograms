@@ -1,0 +1,75 @@
+ class Account
+{
+    int balance;
+    Account(int balance)
+    {
+        this.balance=balance;
+    }
+    void withdraw(int amt)
+    {
+        if(amt>balance)
+        {
+            System.out.println("insufficient balance");
+            return;
+        }
+        balance=balance-amt;
+        System.out.println("withdraw completed");
+    }
+    synchronized void deposit(int amt)
+    {
+        int temp=balance;
+        temp=temp+amt;
+        try{
+            Thread.sleep(800);
+        }catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        balance=temp;
+        System.out.println("deposit completed");
+    }
+    void balancecheck()
+    {
+        System.out.println("current balance"+balance);
+    }
+}
+
+class Husband extends Thread
+{
+    Account a;
+    Husband(Account g)
+    {
+        a=g;
+    }
+    public void run()
+    {
+        a.deposit(1000);
+    }
+}
+class Wife extends Thread
+{
+    Account a;
+    Wife(Account g)
+    {
+        a=g;
+    }
+    public void run()
+    {
+        a.deposit(1000);
+    }
+}
+class Synchronization {
+    public static void main(String[] args) {
+        Account d= new Account(500);
+        new Husband(d).start();
+         new Wife(d).start();
+          try{
+            Thread.sleep(800);
+        }catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        d.balancecheck();
+    
+    }
+}
